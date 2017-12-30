@@ -21,7 +21,7 @@
     "deploy": "serverless deploy",
     "lint": "eslint .",
     "test": "ava",
-    "test:ci": "nyc yarn test && codecov"
+    "test:ci": "nyc yarn test && nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "author": "",
   "license": "ISC"
