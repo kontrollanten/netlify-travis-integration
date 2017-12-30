@@ -1,6 +1,6 @@
 const request = require('request');
 
-module.exports.callTravis = (event, _context, callback) => {
+module.exports.handler = (event, _context, callback) => {
   /* eslint-disable camelcase */
   const {
     deploy_ssl_url, branch, context, title,

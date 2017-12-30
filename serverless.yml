@@ -58,15 +58,15 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  callTravis:
-    handler: handler.callTravis
+  travisCaller:
+    handler: src/travis-caller.handler
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
     events:
       - http:
-          path: netlify-deploy
+          path: travis-caller
           method: post
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)

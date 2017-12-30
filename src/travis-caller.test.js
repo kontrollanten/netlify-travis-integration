@@ -7,11 +7,11 @@ mockRequire('request', {
   post: postMock,
 });
 
-const { callTravis } = require('./handler');
+const { handler: callTravis } = require('./travis-caller');
 
 test.afterEach(() => postMock.reset());
 
-test('callTravis wont create POST request when context isn\'t deploy-preview', (t) => {
+test('handler wont create POST request when context isn\'t deploy-preview', (t) => {
   const event = {
     body: JSON.stringify({ context: 'deploy' }),
   };
@@ -21,7 +21,7 @@ test('callTravis wont create POST request when context isn\'t deploy-preview', (
   t.is(postMock.calledOnce, false);
 });
 
-test('callTravis creates POST request to correct URL', (t) => {
+test('handler creates POST request to correct URL', (t) => {
   t.plan(2);
   const event = {
     body: JSON.stringify({ context: 'deploy-preview' }),
@@ -35,7 +35,7 @@ test('callTravis creates POST request to correct URL', (t) => {
   t.is(postMock.getCall(0).args[0].url, `https://api.travis-ci.org/repo/${encodeURIComponent(targetRepo)}/requests`);
 });
 
-test('callTravis creates POST request with authorization headers', (t) => {
+test('handler creates POST request with authorization headers', (t) => {
   const event = {
     body: JSON.stringify({ context: 'deploy-preview' }),
   };
@@ -50,7 +50,7 @@ test('callTravis creates POST request with authorization headers', (t) => {
   });
 });
 
-test('callTravis creates POST request with Travis configuration body', (t) => {
+test('handler creates POST request with Travis configuration body', (t) => {
   // eslint-disable-next-line camelcase
   const deploy_ssl_url = 'https://deploy.to.this';
   const branch = 'preview-branch';
@@ -79,7 +79,7 @@ test('callTravis creates POST request with Travis configuration body', (t) => {
   });
 });
 
-test('callTravis logs error returned from POST request', (t) => {
+test('handler logs error returned from POST request', (t) => {
   const event = { body: JSON.stringify({ context: 'deploy-preview' }) };
   const error = new Error();
   console.error = sinon.spy();
@@ -92,7 +92,7 @@ test('callTravis logs error returned from POST request', (t) => {
   t.is(console.error.getCall(0).args[0], error);
 });
 
-test('callTravis doesn\'t log error when no error returned from POST request', (t) => {
+test('handler doesn\'t log error when no error returned from POST request', (t) => {
   const event = { body: JSON.stringify({ context: 'deploy-preview' }) };
   console.error = sinon.spy();
 
@@ -104,7 +104,7 @@ test('callTravis doesn\'t log error when no error returned from POST request', (
   t.is(console.error.calledOnce, false);
 });
 
-test('callTravis calls provided callback', (t) => {
+test('handler calls provided callback', (t) => {
   t.plan(2);
   const event = { body: JSON.stringify({ context: 'deploy-preview' }) };
   const callback = sinon.spy();
