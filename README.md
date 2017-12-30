@@ -1,4 +1,5 @@
 # netlify-travis-proxy
+[![Build Status](https://travis-ci.org/kontrollanten/netlify-travis-proxy.svg?branch=master)](https://travis-ci.org/kontrollanten/netlify-travis-proxy)
 [![codecov.io](https://img.shields.io/codecov/c/github/kontrollanten/netlify-travis-proxy.svg?branch=master&style=flat-square)](https://codecov.io/github/kontrollanten/netlify-travis-proxy?branch=master)
 [Serverless](https://serverless.com) glue proxy for calling [Travis](https://travis-ci.org) upon [Netlify](https://netlify.com) deployment.
 
