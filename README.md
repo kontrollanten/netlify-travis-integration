@@ -23,5 +23,20 @@ yarn deploy
 
 [Add a Netlify deploy notification](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications) with the URL provided from `yarn deploy`.
 
+## Target repo .travix.yml example
+Since Travis [doesn't support reading env vars for conditional builds from the API call](https://docs.travis-ci.com/user/conditional-builds-stages-jobs#Specifying-conditions), we have to use `type = api` for conditional checks.
+
+```
+- stage: lint
+  if: type != api
+  script: yarn lint
+- stage: test
+  if: type != api
+  script: yarn test && codecov
+- stage: e2e
+  if: type = api
+  script: yarn install-selenium && yarn e2e
+```
+
 ## Limitations
 Works only for AWS for the moment. It's possible to configure the serverless.yml file to use other providers.
