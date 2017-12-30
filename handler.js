@@ -1,8 +1,20 @@
 const request = require('request');
 
-module.exports.callTravis = (event, context, callback) => {
-  // eslint-disable-next-line camelcase
-  const { deploy_ssl_url } = JSON.parse(event.body);
+module.exports.callTravis = (event, _context, callback) => {
+  /* eslint-disable camelcase */
+  const {
+    deploy_ssl_url, branch, context, title,
+  } = JSON.parse(event.body);
+  /* eslint-enable camelcase */
+
+  if (context !== 'deploy-preview') {
+    return callback(null, {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: `Wont trigger Travis build upon ${context}`,
+      }),
+    });
+  }
 
   request.post({
     url: `https://api.travis-ci.org/repo/${encodeURIComponent(process.env.TARGET_REPO)}/requests`,
@@ -12,8 +24,9 @@ module.exports.callTravis = (event, context, callback) => {
     },
     json: true,
     body: {
+      message: `netlify-travis-proxy: ${title}`,
       request: {
-        branch: 'master',
+        branch,
         config: {
           env: {
             TEST: 'e2e',
@@ -26,8 +39,8 @@ module.exports.callTravis = (event, context, callback) => {
     if (error) console.error(error);
   });
 
-  callback(null, {
-    statusCode: 200,
+  return callback(null, {
+    statusCode: 201,
     body: JSON.stringify({
       message: 'Go Serverless v1.0! Your function executed successfully!',
     }),

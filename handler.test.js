@@ -11,9 +11,21 @@ const { callTravis } = require('./handler');
 
 test.afterEach(() => postMock.reset());
 
+test('callTravis wont create POST request when context isn\'t deploy-preview', (t) => {
+  const event = {
+    body: JSON.stringify({ context: 'deploy' }),
+  };
+
+  callTravis(event, undefined, () => true);
+
+  t.is(postMock.calledOnce, false);
+});
+
 test('callTravis creates POST request to correct URL', (t) => {
   t.plan(2);
-  const event = { body: '{}' };
+  const event = {
+    body: JSON.stringify({ context: 'deploy-preview' }),
+  };
   const targetRepo = 'org/repo';
   process.env.TARGET_REPO = targetRepo;
 
@@ -24,7 +36,9 @@ test('callTravis creates POST request to correct URL', (t) => {
 });
 
 test('callTravis creates POST request with authorization headers', (t) => {
-  const event = { body: '{}' };
+  const event = {
+    body: JSON.stringify({ context: 'deploy-preview' }),
+  };
   const travisToken = 'secret-token';
   process.env.TRAVIS_ACCESS_TOKEN = travisToken;
 
@@ -39,15 +53,22 @@ test('callTravis creates POST request with authorization headers', (t) => {
 test('callTravis creates POST request with Travis configuration body', (t) => {
   // eslint-disable-next-line camelcase
   const deploy_ssl_url = 'https://deploy.to.this';
-  const event = { body: JSON.stringify({ deploy_ssl_url }) };
+  const branch = 'preview-branch';
+  const title = 'commit message';
+  const event = {
+    body: JSON.stringify({
+      deploy_ssl_url, branch, title, context: 'deploy-preview',
+    }),
+  };
   const travisToken = 'secret-token';
   process.env.TRAVIS_ACCESS_TOKEN = travisToken;
 
   callTravis(event, undefined, () => true);
 
   t.deepEqual(postMock.getCall(0).args[0].body, {
+    message: `netlify-travis-proxy: ${title}`,
     request: {
-      branch: 'master',
+      branch,
       config: {
         env: {
           TEST: 'e2e',
@@ -59,7 +80,7 @@ test('callTravis creates POST request with Travis configuration body', (t) => {
 });
 
 test('callTravis logs error returned from POST request', (t) => {
-  const event = { body: '{}' };
+  const event = { body: JSON.stringify({ context: 'deploy-preview' }) };
   const error = new Error();
   console.error = sinon.spy();
 
@@ -72,7 +93,7 @@ test('callTravis logs error returned from POST request', (t) => {
 });
 
 test('callTravis doesn\'t log error when no error returned from POST request', (t) => {
-  const event = { body: '{}' };
+  const event = { body: JSON.stringify({ context: 'deploy-preview' }) };
   console.error = sinon.spy();
 
   callTravis(event, undefined, () => true);
@@ -85,11 +106,11 @@ test('callTravis doesn\'t log error when no error returned from POST request', (
 
 test('callTravis calls provided callback', (t) => {
   t.plan(2);
-  const event = { body: '{}' };
+  const event = { body: JSON.stringify({ context: 'deploy-preview' }) };
   const callback = sinon.spy();
 
   callTravis(event, undefined, callback);
 
   t.is(callback.calledOnce, true);
-  t.is(callback.getCall(0).args[1].statusCode, 200);
+  t.is(callback.getCall(0).args[1].statusCode, 201);
 });
