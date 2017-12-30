@@ -58,6 +58,13 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
+  ghStatusManager:
+    handler: src/gh-status-manager.handler
+
+    events:
+      - http:
+          path: github-status
+          method: post
   travisCaller:
     handler: src/travis-caller.handler
 

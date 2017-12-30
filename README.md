@@ -22,6 +22,7 @@ yarn deploy
 ```
 
 [Add a Netlify deploy notification](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications) with the URL provided from `yarn deploy`.
+Additionaly you can [add support for GitHub statuses](#github-statuses).
 
 ## Target repo .travix.yml example
 Since Travis [doesn't support reading env vars for conditional builds from the API call](https://docs.travis-ci.com/user/conditional-builds-stages-jobs#Specifying-conditions), we have to use `type = api` for conditional checks.
@@ -36,6 +37,20 @@ Since Travis [doesn't support reading env vars for conditional builds from the A
 - stage: e2e
   if: type = api
   script: yarn install-selenium && yarn e2e
+```
+
+## GitHub statuses
+By adding notifications to your target repo .travis.yml you can create statuses for the corresponding git commit.
+```
+notifications:
+  webhooks:
+    urls:
+      - http://hooks.mydomain.com/travisci
+    on_success: always
+    on_failure: always
+    on_start: always
+    on_cancel: always
+    on_error: always
 ```
 
 ## Limitations
