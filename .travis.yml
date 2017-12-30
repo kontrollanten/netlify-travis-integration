@@ -6,9 +6,7 @@ dist: trusty
 language: node_js
 node_js: 6
 
-cache:
-  directories:
-    - node_modules
+cache: yarn
 
 install:
   - npm install yarn -g
@@ -19,4 +17,4 @@ jobs:
     - stage: lint
       script: yarn lint
     - stage: test
-      script: yarn test
+      script: yarn test:ci

@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "ava": "^0.24.0",
+    "codecov": "^3.0.0",
     "eslint": "^4.14.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
@@ -19,7 +20,8 @@
   "scripts": {
     "deploy": "serverless deploy",
     "lint": "eslint .",
-    "test": "nyc ava"
+    "test": "ava",
+    "test:ci": "nyc yarn test && codecov"
   },
   "author": "",
   "license": "ISC"
