@@ -24,17 +24,15 @@ test.beforeEach(() => {
 });
 
 test('creates GET request to retrieve Travis config', (t) => {
-  const event = { headers: {}, body: '{}' };
-  signatureVerifier(event);
+  signatureVerifier('', '', () => true);
 
   t.is(getMock.calledOnce, true);
 });
 
 test('logs and returns error upon GET request error', (t) => {
   t.plan(2);
-  const event = { headers: {}, body: '{}' };
   const error = new Error('GET request error');
-  signatureVerifier(event, callback);
+  signatureVerifier('', '', callback);
 
   getMock.getCall(0).args[1](error);
 
@@ -47,13 +45,9 @@ test('logs and returns error upon GET request error', (t) => {
 
 test('verifies the signature against the public key', (t) => {
   t.plan(3);
-  const payload = 'pay-the-load';
+  const payload = 'payload=pay-the-load';
   const signature = 'signature 1';
-  const event = {
-    headers: { signature },
-    body: JSON.stringify({ payload }),
-  };
-  signatureVerifier(event, callback);
+  signatureVerifier(signature, payload, callback);
 
   /* eslint-disable camelcase */
   const public_key = 'public-enemy';
@@ -73,11 +67,7 @@ test('verifies the signature against the public key', (t) => {
 });
 
 test('return status `failed` upon verify failure', (t) => {
-  const event = {
-    headers: {},
-    body: JSON.stringify({}),
-  };
-  signatureVerifier(event, callback);
+  signatureVerifier('', '', callback);
 
   const getBody = JSON.stringify({
     config: {
@@ -97,11 +87,7 @@ test('return status `failed` upon verify failure', (t) => {
 });
 
 test('return no error upon verify success', (t) => {
-  const event = {
-    headers: {},
-    body: JSON.stringify({}),
-  };
-  signatureVerifier(event, callback);
+  signatureVerifier('', 'pay-the-load', callback);
 
   const getBody = JSON.stringify({
     config: {

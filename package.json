@@ -5,6 +5,7 @@
   "main": "handler.js",
   "dependencies": {
     "crypto": "^1.0.1",
+    "qs": "^6.5.1",
     "request": "^2.83.0"
   },
   "devDependencies": {

@@ -1,9 +1,13 @@
 const request = require('request');
 const signatureVerifier = require('./travis-signature-verifier');
+const qs = require('qs');
 
 /* eslint-disable camelcase */
 module.exports.handler = (event, _context, callback) => {
-  signatureVerifier.verify(event, (error) => {
+  const { Signature: signature } = event.headers;
+  const { payload } = qs.parse(event.body);
+
+  signatureVerifier.verify(signature, payload, (error) => {
     if (error && error.status === 'error') {
       return callback({
         statusCode: 422,

@@ -10,6 +10,10 @@ const signatureVerifierSpy = sinon.stub({
   verify: () => true,
 });
 mockRequire('./travis-signature-verifier', signatureVerifierSpy);
+const qsStub = sinon.stub({
+  parse: () => true,
+});
+mockRequire('qs', qsStub);
 
 const { handler: ghStatusManager } = require('./gh-status-manager');
 
@@ -19,21 +23,30 @@ test.beforeEach(() => {
   callback.reset();
   postSpy.reset();
   signatureVerifierSpy.verify.reset();
-  signatureVerifierSpy.verify.callsFake((_event, _callback) => _callback());
+  signatureVerifierSpy.verify.callsFake((sign, payload, _callback) => _callback());
+  qsStub.parse.reset();
+  qsStub.parse.callsFake(payload => ({ payload }));
 });
 
 test('handler verifies the POST request', (t) => {
+  t.plan(3);
+  const signature = 'i-saw-the-sign';
+  const payload = JSON.stringify({ body: 'shop', status_message: 'Passed' });
   const event = {
-    headers: {},
-    body: '{}',
+    headers: {
+      Signature: signature,
+    },
+    body: payload,
   };
 
   ghStatusManager(event, undefined, callback);
   t.is(signatureVerifierSpy.verify.calledOnce, true);
+  t.is(signatureVerifierSpy.verify.getCall(0).args[0], signature);
+  t.deepEqual(signatureVerifierSpy.verify.getCall(0).args[1], payload);
 });
 
 test('handler doesn\'t create a POST request upon verify status is `error`', (t) => {
-  signatureVerifierSpy.verify.callsFake((_event, _callback) => _callback({ status: 'error' }));
+  signatureVerifierSpy.verify.callsFake((sign, payload, _callback) => _callback({ status: 'error' }));
   const event = {
     headers: {},
     body: JSON.stringify({ status_message: 'Fixed' }),
@@ -155,7 +168,6 @@ test('handler creates a POST request with state `pending`  when receiving status
     headers: {},
     body: JSON.stringify({ status_message: 'Pending' }),
   };
-  signatureVerifierSpy.verify.callsFake((_event, _callback) => _callback());
 
   ghStatusManager(event, undefined, callback);
 
@@ -168,7 +180,6 @@ test('handler logs when an unknown status is received', (t) => {
     headers: {},
     body: JSON.stringify({ status_message: 'You dont even know me' }),
   };
-  signatureVerifierSpy.verify.callsFake((_event, _callback) => _callback());
 
   ghStatusManager(event, undefined, callback);
 
