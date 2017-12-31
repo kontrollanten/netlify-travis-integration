@@ -11,6 +11,8 @@ Typical workflow:
 2. `netlify-travis-proxy` is called after Netlify deployment
 3. `netlify-travis-proxy` triggers a Travis build to perform e2e tests
 
+![netlify-travis-proxy sequence diagram](./netlify-travis-proxy.svg "netlify-travis-proxy sequence diagram")
+
 ## Getting started
 ```
 git clone git@github.com:kontrollanten/netlify-travis-proxy.git
