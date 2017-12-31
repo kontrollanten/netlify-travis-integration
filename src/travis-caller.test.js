@@ -1,6 +1,6 @@
-import test from 'ava';
-import sinon from 'sinon';
-import mockRequire from 'mock-require';
+const test = require('ava');
+const sinon = require('sinon');
+const mockRequire = require('mock-require');
 
 const postMock = sinon.spy();
 mockRequire('request', {
