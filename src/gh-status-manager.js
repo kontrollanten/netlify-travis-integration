@@ -1,6 +1,7 @@
 const request = require('request');
-const signatureVerifier = require('./travis-signature-verifier');
 const qs = require('qs');
+const signatureVerifier = require('./travis-signature-verifier');
+const travisBuildInfo = require('./travis-build-info');
 
 const getStatusState = (statusMessage) => {
   switch (statusMessage) {
@@ -25,7 +26,7 @@ const getStatusState = (statusMessage) => {
 const createGitHubStatus = (repoSlug, payload, callback) => {
   const {
     head_commit, status_message, build_url: target_url,
-  } = JSON.parse(payload);
+  } = payload;
 
   const state = getStatusState(status_message);
 
@@ -74,6 +75,14 @@ module.exports.handler = (event, _context, callback) => {
       });
     }
 
-    return createGitHubStatus(event.headers['Travis-Repo-Slug'], payload, callback);
+    const parsedPayload = JSON.parse(payload);
+
+    return travisBuildInfo.get(parsedPayload.id, (buildInfo) => {
+      if (!buildInfo.stages.find(({ name }) => name.toLowerCase() === 'e2e')) {
+        return callback({ statusCode: 200 });
+      }
+
+      return createGitHubStatus(event.headers['Travis-Repo-Slug'], parsedPayload, callback);
+    });
   });
 };

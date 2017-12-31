@@ -40,17 +40,20 @@ Since Travis [doesn't support reading env vars for conditional builds from the A
 ```
 
 ## GitHub statuses
-By adding notifications to your target repo .travis.yml you can create statuses for the corresponding git commit.
+By adding webhook notifications to your target repo .travis.yml you can create statuses for the corresponding git commit.
+
+The webhook will search for stage e2e in the triggering build. **If stage e2e isn't found, no status will be created.**
+
 ```
 notifications:
   webhooks:
     urls:
-      - http://hooks.mydomain.com/travisci
-    on_success: always
-    on_failure: always
-    on_start: always
-    on_cancel: always
-    on_error: always
+      - https://fdyg78nn.execute-api.eu-west-1.amazonaws.com/dev/github-status # endpoint provided from *yarn deploy*
+    on_start: always    # will create GH status `pending`
+    on_success: always  # will create GH status `success`
+    on_failure: always  # will create GH status `failure`
+    on_cancel: always   # will create GH status `failure`
+    on_error: always    # will create GH status `error`
 ```
 
 ## Limitations

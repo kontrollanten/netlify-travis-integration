@@ -14,6 +14,10 @@ const qsStub = sinon.stub({
   parse: () => true,
 });
 mockRequire('qs', qsStub);
+const travisBuildInfoStub = sinon.stub({
+  get: () => true,
+});
+mockRequire('./travis-build-info', travisBuildInfoStub);
 
 const { handler: ghStatusManager } = require('./gh-status-manager');
 
@@ -26,6 +30,8 @@ test.beforeEach(() => {
   signatureVerifierSpy.verify.callsFake((sign, payload, _callback) => _callback());
   qsStub.parse.reset();
   qsStub.parse.callsFake(payload => ({ payload }));
+  travisBuildInfoStub.get.reset();
+  travisBuildInfoStub.get.callsFake((settings, cb) => cb({ stages: [{ name: 'e2e' }] }));
 });
 
 test('handler verifies the POST request', (t) => {
@@ -45,7 +51,8 @@ test('handler verifies the POST request', (t) => {
   t.deepEqual(signatureVerifierSpy.verify.getCall(0).args[1], payload);
 });
 
-test('handler doesn\'t create a POST request upon verify status is `error`', (t) => {
+test('handler returns callback if request verification return error status `error`', (t) => {
+  t.plan(2);
   signatureVerifierSpy.verify.callsFake((sign, payload, _callback) => _callback({ status: 'error' }));
   const event = {
     headers: {},
@@ -53,6 +60,34 @@ test('handler doesn\'t create a POST request upon verify status is `error`', (t)
   };
 
   ghStatusManager(event, undefined, callback);
+  t.is(callback.calledOnce, true);
+  t.is(travisBuildInfoStub.get.calledOnce, false);
+});
+
+test('handler checks the build info', (t) => {
+  t.plan(2);
+  const id = 'build-id';
+  const event = {
+    headers: {},
+    body: JSON.stringify({ id, status_message: 'Fixed' }),
+  };
+
+  ghStatusManager(event, undefined, callback);
+  t.is(travisBuildInfoStub.get.calledOnce, true);
+  t.is(travisBuildInfoStub.get.lastCall.args[0], id);
+});
+
+test('handler returns callback if build doesn\'t contain e2e stage', (t) => {
+  t.plan(2);
+  travisBuildInfoStub.get.callsFake((settings, cb) => cb({ stages: [] }));
+  const id = 'build-id';
+  const event = {
+    headers: {},
+    body: JSON.stringify({ id, status_message: 'Fixed' }),
+  };
+
+  ghStatusManager(event, undefined, callback);
+  t.is(callback.calledOnce, true);
   t.is(postSpy.calledOnce, false);
 });
 
