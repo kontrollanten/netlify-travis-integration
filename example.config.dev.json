@@ -1,4 +1,5 @@
 {
   "TRAVIS_ACCESS_TOKEN": "",
-  "TARGET_REPO": "username/repo-name"
+  "TARGET_REPO": "username/repo-name",
+  "GITHUB_OAUTH_TOKEN": ""
 }

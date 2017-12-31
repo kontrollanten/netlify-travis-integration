@@ -85,6 +85,24 @@ test('handler creates a POST request to accurate URL and with correct body', (t)
   t.is(callback.calledOnce, true);
 });
 
+test('handler creates a POST request with accurate headers', (t) => {
+  const event = {
+    headers: {},
+    body: JSON.stringify({
+      status_message: 'Passed',
+    }),
+  };
+  const token = 'token no 7';
+  process.env.GITHUB_OAUTH_TOKEN = token;
+
+  ghStatusManager(event, undefined, callback);
+
+  t.deepEqual(postSpy.getCall(0).args[0].headers, {
+    'User-Agent': 'netlify-travis-proxy',
+    Authorization: `token ${token}`,
+  });
+});
+
 test('handler creates a POST request with state `success`  when receiving status `Passed`', (t) => {
   const event = {
     headers: {},

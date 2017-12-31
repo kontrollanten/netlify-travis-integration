@@ -23,6 +23,7 @@ provider:
   environment:
     TRAVIS_ACCESS_TOKEN: ${file(./config.${self:provider.stage}.json):TRAVIS_ACCESS_TOKEN}
     TARGET_REPO: ${file(./config.${self:provider.stage}.json):TARGET_REPO}
+    GITHUB_OAUTH_TOKEN: ${file(./config.${self:provider.stage}.json):GITHUB_OAUTH_TOKEN}
 
 # you can overwrite defaults here
 #  stage: dev

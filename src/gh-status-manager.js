@@ -45,6 +45,10 @@ module.exports.handler = (event, _context, callback) => {
       const url = `https://api.github.com/repos/${event.headers['Travis-Repo-Slug']}/statuses/${head_commit}`;
       request.post({
         url,
+        headers: {
+          'User-Agent': 'netlify-travis-proxy',
+          Authorization: `token ${process.env.GITHUB_OAUTH_TOKEN}`,
+        },
         body: {
           state,
           target_url,
