@@ -215,3 +215,49 @@ test('handler wont do any POST request when an unknown status is received', (t) 
 
   t.is(postSpy.calledOnce, false);
 });
+
+test('is firing callback if POST returns error', (t) => {
+  const event = {
+    headers: {},
+    body: JSON.stringify({ status_message: 'Pending' }),
+  };
+
+  ghStatusManager(event, undefined, callback);
+  postSpy.getCall(0).args[1](true);
+
+  t.deepEqual(callback.lastCall.args[0], {
+    statusCode: 500,
+  });
+});
+
+test('is firing callback if POST returns statusCode bigger than 201', (t) => {
+  const event = {
+    headers: {},
+    body: JSON.stringify({ status_message: 'Pending' }),
+  };
+
+  ghStatusManager(event, undefined, callback);
+  postSpy.getCall(0).args[1](false, { statusCode: 404 });
+
+  t.deepEqual(callback.lastCall.args[0], {
+    statusCode: 500,
+  });
+});
+
+test('is firing callback if POST returns succesfully', (t) => {
+  t.plan(2);
+  const event = {
+    headers: {},
+    body: JSON.stringify({ status_message: 'Pending' }),
+  };
+  sinon.stub(console, 'info').callsFake(() => true);
+
+  ghStatusManager(event, undefined, callback);
+  postSpy.getCall(0).args[1](false, { statusCode: 201 });
+
+  t.deepEqual(callback.lastCall.args[0], {
+    statusCode: 201,
+  });
+  t.is(console.info.calledOnce, true);
+  console.info.restore();
+});

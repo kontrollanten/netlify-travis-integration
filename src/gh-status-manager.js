@@ -55,9 +55,21 @@ module.exports.handler = (event, _context, callback) => {
           context: 'netlify-travis-proxy',
         },
         json: true,
+      }, (requestError, httpResponse) => {
+        if (requestError || httpResponse.statusCode > 201) {
+          console.error(`Failed to POST to ${url}`, httpResponse, requestError);
+
+          return callback({ statusCode: 500 });
+        }
+
+        console.info('Successfully POST', JSON.stringify(httpResponse));
+
+        return callback({ statusCode: 201 });
       });
     }
 
-    return callback({ statusCode: state ? 201 : 422 });
+    return callback({
+      statusCode: 422,
+    });
   });
 };
