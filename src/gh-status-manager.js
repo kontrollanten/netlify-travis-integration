@@ -78,7 +78,12 @@ module.exports.handler = (event, _context, callback) => {
 
     const parsedPayload = JSON.parse(payload);
 
-    return travisBuildInfo.get(parsedPayload.id, (buildInfo) => {
+    return travisBuildInfo.get(parsedPayload.id, (e, buildInfo) => {
+      if (e) {
+        console.error(e);
+        return callback({ statusCode: 500 });
+      }
+
       if (!buildInfo.stages.find(({ name }) => name.toLowerCase() === 'e2e')) {
         return callback({ statusCode: 200 });
       }

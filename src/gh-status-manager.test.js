@@ -22,6 +22,8 @@ mockRequire('./travis-build-info', travisBuildInfoStub);
 const { handler: ghStatusManager } = require('./gh-status-manager');
 
 const callback = sinon.spy();
+sinon.stub(console, 'error');
+sinon.stub(console, 'info');
 
 test.beforeEach(() => {
   callback.reset();
@@ -31,7 +33,9 @@ test.beforeEach(() => {
   qsStub.parse.reset();
   qsStub.parse.callsFake(payload => ({ payload }));
   travisBuildInfoStub.get.reset();
-  travisBuildInfoStub.get.callsFake((settings, cb) => cb({ stages: [{ name: 'e2e' }] }));
+  travisBuildInfoStub.get.callsFake((settings, cb) => cb(false, { stages: [{ name: 'e2e' }] }));
+
+  console.error.reset();
 });
 
 test('handler verifies the POST request', (t) => {
@@ -77,9 +81,23 @@ test('handler checks the build info', (t) => {
   t.is(travisBuildInfoStub.get.lastCall.args[0], id);
 });
 
+test('handler logs error and returns callback if fetching build fails', (t) => {
+  t.plan(2);
+  const error = new Error('fetch failed');
+  travisBuildInfoStub.get.callsFake((settings, cb) => cb(error));
+  const event = {
+    headers: {},
+    body: JSON.stringify({ status_message: 'Fixed' }),
+  };
+
+  ghStatusManager(event, undefined, callback);
+  t.is(callback.calledOnce, true);
+  t.is(console.error.lastCall.args[0], error);
+});
+
 test('handler returns callback if build doesn\'t contain e2e stage', (t) => {
   t.plan(2);
-  travisBuildInfoStub.get.callsFake((settings, cb) => cb({ stages: [] }));
+  travisBuildInfoStub.get.callsFake((settings, cb) => cb(false, { stages: [] }));
   const id = 'build-id';
   const event = {
     headers: {},
@@ -228,7 +246,6 @@ test('handler creates a POST request with state `pending`  when receiving status
 });
 
 test('handler logs when an unknown status is received', (t) => {
-  console.error = sinon.spy();
   const event = {
     headers: {},
     body: JSON.stringify({ status_message: 'You dont even know me' }),
@@ -262,6 +279,7 @@ test('is firing callback if POST returns error', (t) => {
   t.deepEqual(callback.lastCall.args[0], {
     statusCode: 500,
   });
+  t.is(console.error.calledOnce, true);
 });
 
 test('is firing callback if POST returns statusCode bigger than 201', (t) => {
@@ -278,13 +296,12 @@ test('is firing callback if POST returns statusCode bigger than 201', (t) => {
   });
 });
 
-test('is firing callback if POST returns succesfully', (t) => {
+test('is firing callback if POST returns successfully', (t) => {
   t.plan(2);
   const event = {
     headers: {},
     body: JSON.stringify({ status_message: 'Pending' }),
   };
-  sinon.stub(console, 'info').callsFake(() => true);
 
   ghStatusManager(event, undefined, callback);
   postSpy.getCall(0).args[1](false, { statusCode: 201 });
