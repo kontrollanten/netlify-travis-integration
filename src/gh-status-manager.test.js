@@ -64,7 +64,7 @@ test('handler creates a POST request', (t) => {
   const postBody = postSpy.getCall(0).args[0].body;
   t.deepEqual(Object.keys(postBody)
     .filter(key => key !== 'state')
-    .reduce((output, key) => ({ ...output, [key]: postBody[key] }), {}), {
+    .reduce((output, key) => Object.assign(output, { [key]: postBody[key] }), {}), {
     target_url,
     context,
   });
