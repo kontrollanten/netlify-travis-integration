@@ -61,8 +61,10 @@ test('handler creates a POST request', (t) => {
 
   t.is(postSpy.calledOnce, true);
   t.is(postSpy.getCall(0).args[0].url, `https://api.github.com/repos/${repoSlug}/statuses/${commit}`);
-  const { state, ...postBody } = postSpy.getCall(0).args[0].body;
-  t.deepEqual(postBody, {
+  const postBody = postSpy.getCall(0).args[0].body;
+  t.deepEqual(Object.keys(postBody)
+    .filter(key => key !== 'state')
+    .reduce((output, key) => ({ ...output, [key]: postBody[key] }), {}), {
     target_url,
     context,
   });
