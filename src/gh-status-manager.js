@@ -25,8 +25,9 @@ const getStatusState = (statusMessage) => {
 /* eslint-disable camelcase */
 const createGitHubStatus = (repoSlug, payload, callback) => {
   const {
-    head_commit, status_message, build_url: target_url,
+    head_commit, base_commit, status_message, build_url: target_url,
   } = payload;
+  const commit = head_commit || base_commit;
 
   const state = getStatusState(status_message);
 
@@ -38,7 +39,7 @@ const createGitHubStatus = (repoSlug, payload, callback) => {
     });
   }
 
-  const url = `https://api.github.com/repos/${repoSlug}/statuses/${head_commit}`;
+  const url = `https://api.github.com/repos/${repoSlug}/statuses/${commit}`;
   return request.post({
     url,
     headers: {
