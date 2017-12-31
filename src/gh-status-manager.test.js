@@ -56,8 +56,8 @@ test('handler doesn\'t create a POST request upon verify status is `error`', (t)
   t.is(postSpy.calledOnce, false);
 });
 
-test('handler creates a POST request', (t) => {
-  t.plan(4);
+test('handler creates a POST request to accurate URL and with correct body', (t) => {
+  t.plan(5);
   const repoSlug = 'super/netlify-travis-proxy';
   const context = 'netlify-travis-proxy';
   /* eslint-disable camelcase  */
@@ -81,6 +81,7 @@ test('handler creates a POST request', (t) => {
     target_url,
     context,
   });
+  t.is(postSpy.getCall(0).args[0].json, true);
   t.is(callback.calledOnce, true);
 });
 

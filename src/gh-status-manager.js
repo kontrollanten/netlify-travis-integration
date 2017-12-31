@@ -50,6 +50,7 @@ module.exports.handler = (event, _context, callback) => {
           target_url,
           context: 'netlify-travis-proxy',
         },
+        json: true,
       });
     }
 
