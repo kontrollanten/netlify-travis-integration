@@ -22,6 +22,47 @@ const getStatusState = (statusMessage) => {
 };
 
 /* eslint-disable camelcase */
+const createGitHubStatus = (repoSlug, payload, callback) => {
+  const {
+    head_commit, status_message, build_url: target_url,
+  } = JSON.parse(payload);
+
+  const state = getStatusState(status_message);
+
+  if (!state) {
+    console.error(`Received unknown status_message ${status_message}`, payload);
+
+    return callback({
+      statusCode: 422,
+    });
+  }
+
+  const url = `https://api.github.com/repos/${repoSlug}/statuses/${head_commit}`;
+  return request.post({
+    url,
+    headers: {
+      'User-Agent': 'netlify-travis-proxy',
+      Authorization: `token ${process.env.GITHUB_OAUTH_TOKEN}`,
+    },
+    body: {
+      state,
+      target_url,
+      context: 'netlify-travis-proxy',
+    },
+    json: true,
+  }, (requestError, httpResponse) => {
+    if (requestError || httpResponse.statusCode > 201) {
+      console.error(`Failed to POST to ${url}`, httpResponse, requestError);
+
+      return callback({ statusCode: 500 });
+    }
+
+    console.info('Successfully POST', JSON.stringify(httpResponse));
+
+    return callback({ statusCode: 201 });
+  });
+};
+
 module.exports.handler = (event, _context, callback) => {
   const { Signature: signature } = event.headers;
   const { payload } = qs.parse(event.body);
@@ -33,43 +74,6 @@ module.exports.handler = (event, _context, callback) => {
       });
     }
 
-    const {
-      head_commit, status_message, build_url: target_url,
-    } = JSON.parse(payload);
-
-    const state = getStatusState(status_message);
-
-    if (!state) {
-      console.error(`Received unknown status_message ${status_message}`, event.body);
-
-      return callback({
-        statusCode: 422,
-      });
-    }
-
-    const url = `https://api.github.com/repos/${event.headers['Travis-Repo-Slug']}/statuses/${head_commit}`;
-    return request.post({
-      url,
-      headers: {
-        'User-Agent': 'netlify-travis-proxy',
-        Authorization: `token ${process.env.GITHUB_OAUTH_TOKEN}`,
-      },
-      body: {
-        state,
-        target_url,
-        context: 'netlify-travis-proxy',
-      },
-      json: true,
-    }, (requestError, httpResponse) => {
-      if (requestError || httpResponse.statusCode > 201) {
-        console.error(`Failed to POST to ${url}`, httpResponse, requestError);
-
-        return callback({ statusCode: 500 });
-      }
-
-      console.info('Successfully POST', JSON.stringify(httpResponse));
-
-      return callback({ statusCode: 201 });
-    });
+    return createGitHubStatus(event.headers['Travis-Repo-Slug'], payload, callback);
   });
 };
