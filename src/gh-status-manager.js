@@ -50,6 +50,7 @@ const createGitHubStatus = (repoSlug, payload, callback) => {
       state,
       target_url,
       context: 'netlify-travis-proxy',
+      description: 'The Travis CI e2e test passed',
     },
     json: true,
   }, (requestError, httpResponse) => {

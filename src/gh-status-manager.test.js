@@ -112,14 +112,13 @@ test('handler returns callback if build doesn\'t contain e2e stage', (t) => {
 test('handler creates a POST request to accurate URL and with correct body', (t) => {
   t.plan(4);
   const repoSlug = 'super/netlify-travis-proxy';
-  const context = 'netlify-travis-proxy';
   /* eslint-disable camelcase  */
   const head_commit = 'swedish-hacker-association';
   const target_url = 'https://travis-ci.org/build/1337';
   const event = {
     headers: { 'Travis-Repo-Slug': repoSlug },
     body: JSON.stringify({
-      status_message: 'Passed', head_commit, build_url: target_url, context,
+      status_message: 'Passed', head_commit, build_url: target_url,
     }),
   };
 
@@ -132,7 +131,8 @@ test('handler creates a POST request to accurate URL and with correct body', (t)
     .filter(key => key !== 'state')
     .reduce((output, key) => Object.assign(output, { [key]: postBody[key] }), {}), {
     target_url,
-    context,
+    context: 'netlify-travis-proxy',
+    description: 'The Travis CI e2e test passed',
   });
   t.is(postSpy.getCall(0).args[0].json, true);
 });
