@@ -2,6 +2,8 @@
 
 [Serverless](https://serverless.com) glue proxy for calling [Travis](https://travis-ci.org) upon [Netlify](https://netlify.com) deployment.
 
+![netlify-travis-proxy screenshot](./screenshot-status.png "netlify-travis-proxy screenshot")
+
 ## Why?
 Makes it easy to run e2e tests after [Netlify deployment preview](https://www.netlify.com/blog/2016/07/20/introducing-deploy-previews-in-netlify/) is generated.
 
