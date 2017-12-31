@@ -59,21 +59,21 @@ test('handler doesn\'t create a POST request upon verify status is `error`', (t)
 test('handler creates a POST request', (t) => {
   t.plan(4);
   const repoSlug = 'super/netlify-travis-proxy';
-  const commit = 'swedish-hacker-association';
   const context = 'netlify-travis-proxy';
-  // eslint-disable-next-line camelcase
+  /* eslint-disable camelcase  */
+  const head_commit = 'swedish-hacker-association';
   const target_url = 'https://travis-ci.org/build/1337';
   const event = {
     headers: { 'Travis-Repo-Slug': repoSlug },
     body: JSON.stringify({
-      status_message: 'Passed', commit, build_url: target_url, context,
+      status_message: 'Passed', head_commit, build_url: target_url, context,
     }),
   };
 
   ghStatusManager(event, undefined, callback);
 
   t.is(postSpy.calledOnce, true);
-  t.is(postSpy.getCall(0).args[0].url, `https://api.github.com/repos/${repoSlug}/statuses/${commit}`);
+  t.is(postSpy.getCall(0).args[0].url, `https://api.github.com/repos/${repoSlug}/statuses/${head_commit}`);
   const postBody = postSpy.getCall(0).args[0].body;
   t.deepEqual(Object.keys(postBody)
     .filter(key => key !== 'state')

@@ -15,8 +15,8 @@ module.exports.handler = (event, _context, callback) => {
     }
 
     const {
-      commit, status_message, build_url: target_url,
-    } = JSON.parse(event.body);
+      head_commit, status_message, build_url: target_url,
+    } = JSON.parse(payload);
 
     let state;
 
@@ -42,8 +42,9 @@ module.exports.handler = (event, _context, callback) => {
     }
 
     if (state) {
+      const url = `https://api.github.com/repos/${event.headers['Travis-Repo-Slug']}/statuses/${head_commit}`;
       request.post({
-        url: `https://api.github.com/repos/${event.headers['Travis-Repo-Slug']}/statuses/${commit}`,
+        url,
         body: {
           state,
           target_url,
