@@ -9,7 +9,7 @@ Makes it easy to run e2e tests after [Netlify deployment preview](https://www.ne
 
 ## How?
 Typical workflow:
-1. Netlify deployment is triggered upon pushing a new commit
+1. Netlify deployment is triggered upon creating/updating pull request
 2. `netlify-travis-proxy` is called after Netlify deployment
 3. `netlify-travis-proxy` triggers a Travis build to perform e2e tests
 
