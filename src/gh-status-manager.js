@@ -3,22 +3,48 @@ const qs = require('qs');
 const signatureVerifier = require('./travis-signature-verifier');
 const travisBuildInfo = require('./travis-build-info');
 
-const getStatusState = (statusMessage) => {
-  switch (statusMessage) {
-    case 'Passed':
-    case 'Fixed':
-      return 'success';
-    case 'Broken':
-    case 'Failed':
-    case 'Still Failing':
-    case 'Canceled':
-      return 'failure';
-    case 'Errored':
-      return 'error';
-    case 'Pending':
-      return 'pending';
+const getStatusStateAndDesc = (statusMessage) => {
+  const msg = statusMessage.toLowerCase();
+  const description = 'The Travis CI e2e tests ';
+
+  switch (msg) {
+    case 'passed':
+      return {
+        state: 'success',
+        description: description.concat(msg),
+      };
+    case 'fixed':
+      return {
+        state: 'success',
+        description: description.concat(`is ${msg}`),
+      };
+    case 'failed':
+      return {
+        state: 'failure',
+        description: description.concat(`has ${msg}`),
+      };
+    case 'broken':
+    case 'still failing':
+    case 'canceled':
+      return {
+        state: 'failure',
+        description: description.concat(`is ${msg}`),
+      };
+    case 'errored':
+      return {
+        state: 'error',
+        description: description.concat(`is ${msg}`),
+      };
+    case 'pending':
+      return {
+        state: 'pending',
+        description: description.concat(`is ${msg}`),
+      };
     default:
-      return false;
+      return {
+        state: false,
+        description: false,
+      };
   }
 };
 
@@ -29,7 +55,7 @@ const createGitHubStatus = (repoSlug, payload, callback) => {
   } = payload;
   const commit = head_commit || base_commit;
 
-  const state = getStatusState(status_message);
+  const { state, description } = getStatusStateAndDesc(status_message);
 
   if (!state) {
     console.error(`Received unknown status_message ${status_message}`, payload);
@@ -50,7 +76,7 @@ const createGitHubStatus = (repoSlug, payload, callback) => {
       state,
       target_url,
       context: 'netlify-travis-proxy',
-      description: 'The Travis CI e2e test passed',
+      description,
     },
     json: true,
   }, (requestError, httpResponse) => {

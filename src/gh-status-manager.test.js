@@ -132,7 +132,7 @@ test('handler creates a POST request to accurate URL and with correct body', (t)
     .reduce((output, key) => Object.assign(output, { [key]: postBody[key] }), {}), {
     target_url,
     context: 'netlify-travis-proxy',
-    description: 'The Travis CI e2e test passed',
+    description: 'The Travis CI e2e tests passed',
   });
   t.is(postSpy.getCall(0).args[0].json, true);
 });
