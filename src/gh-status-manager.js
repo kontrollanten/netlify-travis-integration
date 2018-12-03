@@ -58,7 +58,7 @@ const createGitHubStatus = (repoSlug, payload, callback) => {
   const { state, description } = getStatusStateAndDesc(status_message);
 
   if (!state) {
-    console.error(`Received unknown status_message ${status_message}`, payload);
+    console.error(`Received unknown status_message ${status_message}: ${JSON.stringify(payload)}`);
 
     return callback({
       statusCode: 422,
@@ -86,7 +86,7 @@ const createGitHubStatus = (repoSlug, payload, callback) => {
       return callback({ statusCode: 500 });
     }
 
-    console.info('Successfully POST', JSON.stringify(httpResponse));
+    console.info(`Successfully POST ${JSON.stringify(httpResponse)}`);
 
     return callback({ statusCode: 201 });
   });
@@ -107,7 +107,7 @@ module.exports.handler = (event, _context, callback) => {
 
     return travisBuildInfo.get(parsedPayload.id, (e, buildInfo) => {
       if (e) {
-        console.error(e);
+        console.error(JSON.stringify(e));
         return callback({ statusCode: 500 });
       }
 

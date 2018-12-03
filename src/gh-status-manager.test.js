@@ -92,7 +92,7 @@ test('handler logs error and returns callback if fetching build fails', (t) => {
 
   ghStatusManager(event, undefined, callback);
   t.is(callback.calledOnce, true);
-  t.is(console.error.lastCall.args[0], error);
+  t.is(console.error.lastCall.args[0], JSON.stringify(error));
 });
 
 test('handler returns callback if build doesn\'t contain e2e stage', (t) => {
