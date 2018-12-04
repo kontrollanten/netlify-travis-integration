@@ -51,9 +51,8 @@ const getStatusStateAndDesc = (statusMessage) => {
 /* eslint-disable camelcase */
 const createGitHubStatus = (repoSlug, payload, callback) => {
   const {
-    head_commit, base_commit, status_message, build_url: target_url,
+    commit, status_message, build_url: target_url,
   } = payload;
-  const commit = head_commit || base_commit;
 
   const { state, description } = getStatusStateAndDesc(status_message);
 

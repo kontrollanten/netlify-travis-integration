@@ -112,20 +112,20 @@ test('handler returns callback if build doesn\'t contain e2e stage', (t) => {
 test('handler creates a POST request to accurate URL and with correct body', (t) => {
   t.plan(4);
   const repoSlug = 'super/netlify-travis-proxy';
+  const commit = 'swedish-hacker-association';
   /* eslint-disable camelcase  */
-  const head_commit = 'swedish-hacker-association';
   const target_url = 'https://travis-ci.org/build/1337';
   const event = {
     headers: { 'Travis-Repo-Slug': repoSlug },
     body: JSON.stringify({
-      status_message: 'Passed', head_commit, build_url: target_url,
+      commit, status_message: 'Passed', build_url: target_url,
     }),
   };
 
   ghStatusManager(event, undefined, callback);
 
   t.is(postSpy.calledOnce, true);
-  t.is(postSpy.getCall(0).args[0].url, `https://api.github.com/repos/${repoSlug}/statuses/${head_commit}`);
+  t.is(postSpy.getCall(0).args[0].url, `https://api.github.com/repos/${repoSlug}/statuses/${commit}`);
   const postBody = postSpy.getCall(0).args[0].body;
   t.deepEqual(Object.keys(postBody)
     .filter(key => key !== 'state')
