@@ -276,10 +276,7 @@ test('is firing callback if POST returns error', (t) => {
   ghStatusManager(event, undefined, callback);
   postSpy.getCall(0).args[1](true);
 
-  t.deepEqual(callback.lastCall.args[0], {
-    statusCode: 500,
-  });
-  t.is(console.error.calledOnce, true);
+  t.regex(callback.lastCall.args[0], /failed to post/i);
 });
 
 test('is firing callback if POST returns statusCode bigger than 201', (t) => {
@@ -291,9 +288,7 @@ test('is firing callback if POST returns statusCode bigger than 201', (t) => {
   ghStatusManager(event, undefined, callback);
   postSpy.getCall(0).args[1](false, { statusCode: 404 });
 
-  t.deepEqual(callback.lastCall.args[0], {
-    statusCode: 500,
-  });
+  t.regex(callback.lastCall.args[0], /failed to post/i);
 });
 
 test('is firing callback if POST returns successfully', (t) => {
@@ -306,7 +301,7 @@ test('is firing callback if POST returns successfully', (t) => {
   ghStatusManager(event, undefined, callback);
   postSpy.getCall(0).args[1](false, { statusCode: 201 });
 
-  t.deepEqual(callback.lastCall.args[0], {
+  t.deepEqual(callback.lastCall.args[1], {
     statusCode: 201,
   });
   t.is(console.info.calledOnce, true);

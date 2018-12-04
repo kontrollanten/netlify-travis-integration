@@ -60,9 +60,7 @@ const createGitHubStatus = (repoSlug, payload, callback) => {
   if (!state) {
     console.error(`Received unknown status_message ${status_message}: ${JSON.stringify(payload)}`);
 
-    return callback({
-      statusCode: 422,
-    });
+    return callback(`Received unknown status_message ${status_message}: ${JSON.stringify(payload)}`);
   }
 
   const url = `https://api.github.com/repos/${repoSlug}/statuses/${commit}`;
@@ -81,14 +79,12 @@ const createGitHubStatus = (repoSlug, payload, callback) => {
     json: true,
   }, (requestError, httpResponse) => {
     if (requestError || httpResponse.statusCode > 201) {
-      console.error(`Failed to POST to ${url}`, httpResponse, requestError);
-
-      return callback({ statusCode: 500 });
+      return callback(`Failed to POST to ${url}: ${JSON.stringify(httpResponse)} ${JSON.stringify(requestError)}`);
     }
 
     console.info(`Successfully POST ${JSON.stringify(httpResponse)}`);
 
-    return callback({ statusCode: 201 });
+    return callback(null, { statusCode: 201 });
   });
 };
 
@@ -98,9 +94,7 @@ module.exports.handler = (event, _context, callback) => {
 
   signatureVerifier.verify(signature, payload, (error) => {
     if (error && error.status === 'error') {
-      return callback({
-        statusCode: 422,
-      });
+      return callback(JSON.stringify(error));
     }
 
     const parsedPayload = JSON.parse(payload);
@@ -108,11 +102,11 @@ module.exports.handler = (event, _context, callback) => {
     return travisBuildInfo.get(parsedPayload.id, (e, buildInfo) => {
       if (e) {
         console.error(JSON.stringify(e));
-        return callback({ statusCode: 500 });
+        return callback(JSON.stringify(e));
       }
 
       if (!buildInfo.stages.find(({ name }) => name.toLowerCase() === 'e2e')) {
-        return callback({ statusCode: 200 });
+        return callback(null, { statusCode: 200 });
       }
 
       return createGitHubStatus(event.headers['Travis-Repo-Slug'], parsedPayload, callback);
