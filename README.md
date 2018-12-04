@@ -22,7 +22,7 @@ cd netlify-travis-proxy
 yarn
 cp .env.example .env # Open and fill your configuration
 cp example.config.dev.json config.dev.json # Open and fill your configuration
-yarn deploy
+(export $(cat .env | xargs) && yarn deploy)
 ```
 
 [Add a Netlify deploy notification](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications) with the URL provided from `yarn deploy`.
