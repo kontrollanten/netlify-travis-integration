@@ -81,27 +81,15 @@ test('handler creates POST request with Travis configuration body', (t) => {
 
 test('handler logs error returned from POST request', (t) => {
   const event = { body: JSON.stringify({ context: 'deploy-preview' }) };
-  const error = new Error();
-  console.error = sinon.spy();
+  const error = { err: 'or' };
+  const callback = sinon.spy();
 
-  callTravis(event, undefined, () => true);
+  callTravis(event, undefined, callback);
 
   const requestCb = postMock.getCall(0).args[1];
   requestCb(error);
 
-  t.is(console.error.getCall(0).args[0], error);
-});
-
-test('handler doesn\'t log error when no error returned from POST request', (t) => {
-  const event = { body: JSON.stringify({ context: 'deploy-preview' }) };
-  console.error = sinon.spy();
-
-  callTravis(event, undefined, () => true);
-
-  const requestCb = postMock.getCall(0).args[1];
-  requestCb();
-
-  t.is(console.error.calledOnce, false);
+  t.is(callback.getCall(0).args[0], JSON.stringify(error));
 });
 
 test('handler calls provided callback', (t) => {
@@ -110,6 +98,8 @@ test('handler calls provided callback', (t) => {
   const callback = sinon.spy();
 
   callTravis(event, undefined, callback);
+  const requestCb = postMock.lastCall.args[1];
+  requestCb();
 
   t.is(callback.calledOnce, true);
   t.is(callback.getCall(0).args[1].statusCode, 201);

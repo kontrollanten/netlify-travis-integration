@@ -16,7 +16,7 @@ module.exports.handler = (event, _context, callback) => {
     });
   }
 
-  request.post({
+  return request.post({
     url: `https://api.travis-ci.org/repo/${encodeURIComponent(process.env.TARGET_REPO)}/requests`,
     headers: {
       'Travis-API-Version': 3,
@@ -36,13 +36,13 @@ module.exports.handler = (event, _context, callback) => {
       },
     },
   }, (error) => {
-    if (error) console.error(error);
-  });
+    if (error) return callback(JSON.stringify(error));
 
-  return callback(null, {
-    statusCode: 201,
-    body: JSON.stringify({
-      message: 'Go Serverless v1.0! Your function executed successfully!',
-    }),
+    return callback(null, {
+      statusCode: 201,
+      body: JSON.stringify({
+        message: 'Go Serverless v1.0! Your function executed successfully!',
+      }),
+    });
   });
 };
