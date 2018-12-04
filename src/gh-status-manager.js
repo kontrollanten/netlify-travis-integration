@@ -54,6 +54,10 @@ const createGitHubStatus = (repoSlug, payload, callback) => {
     commit, status_message, build_url: target_url,
   } = payload;
 
+  if (!commit) {
+    return callback(`No commit hash found in payload: ${JSON.stringify(payload)}`);
+  }
+
   const { state, description } = getStatusStateAndDesc(status_message);
 
   if (!state) {

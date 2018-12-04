@@ -141,7 +141,7 @@ test('handler creates a POST request with accurate headers', (t) => {
   const event = {
     headers: {},
     body: JSON.stringify({
-      status_message: 'Passed',
+      commit: 'sha', status_message: 'Passed',
     }),
   };
   const token = 'token no 7';
@@ -159,7 +159,7 @@ test('handler creates a POST request with state `success`  when receiving status
   const event = {
     headers: {},
     body: JSON.stringify({
-      status_message: 'Passed',
+      commit: 'sha', status_message: 'Passed',
     }),
   };
 
@@ -171,7 +171,7 @@ test('handler creates a POST request with state `success`  when receiving status
 test('handler creates a POST request with state `success`  when receiving status `Fixed`', (t) => {
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'Fixed' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'Fixed' }),
   };
 
   ghStatusManager(event, undefined, callback);
@@ -182,7 +182,7 @@ test('handler creates a POST request with state `success`  when receiving status
 test('handler creates a POST request with state `failure`  when receiving status `Broken`', (t) => {
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'Broken' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'Broken' }),
   };
 
   ghStatusManager(event, undefined, callback);
@@ -193,7 +193,7 @@ test('handler creates a POST request with state `failure`  when receiving status
 test('handler creates a POST request with state `failure`  when receiving status `Failed`', (t) => {
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'Failed' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'Failed' }),
   };
 
   ghStatusManager(event, undefined, callback);
@@ -204,7 +204,7 @@ test('handler creates a POST request with state `failure`  when receiving status
 test('handler creates a POST request with state `failure`  when receiving status `Still Failing`', (t) => {
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'Still Failing' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'Still Failing' }),
   };
 
   ghStatusManager(event, undefined, callback);
@@ -215,7 +215,7 @@ test('handler creates a POST request with state `failure`  when receiving status
 test('handler creates a POST request with state `failure`  when receiving status `Canceled`', (t) => {
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'Canceled' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'Canceled' }),
   };
 
   ghStatusManager(event, undefined, callback);
@@ -226,7 +226,7 @@ test('handler creates a POST request with state `failure`  when receiving status
 test('handler creates a POST request with state `error`  when receiving status `Errored`', (t) => {
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'Errored' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'Errored' }),
   };
 
   ghStatusManager(event, undefined, callback);
@@ -237,7 +237,7 @@ test('handler creates a POST request with state `error`  when receiving status `
 test('handler creates a POST request with state `pending`  when receiving status `Pending`', (t) => {
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'Pending' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'Pending' }),
   };
 
   ghStatusManager(event, undefined, callback);
@@ -248,7 +248,7 @@ test('handler creates a POST request with state `pending`  when receiving status
 test('handler logs when an unknown status is received', (t) => {
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'You dont even know me' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'You dont even know me' }),
   };
 
   ghStatusManager(event, undefined, callback);
@@ -270,7 +270,7 @@ test('handler wont do any POST request when an unknown status is received', (t) 
 test('is firing callback if POST returns error', (t) => {
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'Pending' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'Pending' }),
   };
 
   ghStatusManager(event, undefined, callback);
@@ -282,7 +282,7 @@ test('is firing callback if POST returns error', (t) => {
 test('is firing callback if POST returns statusCode bigger than 201', (t) => {
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'Pending' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'Pending' }),
   };
 
   ghStatusManager(event, undefined, callback);
@@ -295,7 +295,7 @@ test('is firing callback if POST returns successfully', (t) => {
   t.plan(2);
   const event = {
     headers: {},
-    body: JSON.stringify({ status_message: 'Pending' }),
+    body: JSON.stringify({ commit: 'sha', status_message: 'Pending' }),
   };
 
   ghStatusManager(event, undefined, callback);
