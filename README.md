@@ -1,8 +1,8 @@
-# netlify-travis-proxy [![Build Status](https://travis-ci.org/kontrollanten/netlify-travis-proxy.svg?branch=master)](https://travis-ci.org/kontrollanten/netlify-travis-proxy) [![codecov.io](https://img.shields.io/codecov/c/github/kontrollanten/netlify-travis-proxy.svg?branch=master&style=flat-square)](https://codecov.io/github/kontrollanten/netlify-travis-proxy?branch=master)
+# netlify-travis-integration [![Build Status](https://travis-ci.org/kontrollanten/netlify-travis-integration.svg?branch=master)](https://travis-ci.org/kontrollanten/netlify-travis-integration) [![codecov.io](https://img.shields.io/codecov/c/github/kontrollanten/netlify-travis-integration.svg?branch=master&style=flat-square)](https://codecov.io/github/kontrollanten/netlify-travis-integration?branch=master)
 
 [Serverless](https://serverless.com) glue proxy for calling [Travis](https://travis-ci.org) upon [Netlify](https://netlify.com) deployment.
 
-![netlify-travis-proxy screenshot](./screenshot-status.png "netlify-travis-proxy screenshot")
+![netlify-travis-integration screenshot](./screenshot-status.png "netlify-travis-integration screenshot")
 
 ## Why?
 Makes it easy to run e2e tests after [Netlify deployment preview](https://www.netlify.com/blog/2016/07/20/introducing-deploy-previews-in-netlify/) is generated.
@@ -10,8 +10,8 @@ Makes it easy to run e2e tests after [Netlify deployment preview](https://www.ne
 ## How?
 Typical workflow:
 1. Netlify deployment is triggered upon creating/updating pull request
-2. `netlify-travis-proxy` is called after Netlify deployment
-3. `netlify-travis-proxy` triggers a Travis build to perform e2e tests
+2. `netlify-travis-integration` is called after Netlify deployment
+3. `netlify-travis-integration` triggers a Travis build to perform e2e tests
 
 ![netlify-travis-proxy sequence diagram](./netlify-travis-proxy.svg "netlify-travis-proxy sequence diagram")
 
