@@ -14,3 +14,6 @@ jobs:
       script: yarn lint
     - stage: test
       script: yarn test:ci
+    - stage: deploy
+      if: branch = master
+      script: yarn deploy

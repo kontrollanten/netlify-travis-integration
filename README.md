@@ -16,17 +16,22 @@ Typical workflow:
 ![netlify-travis-proxy sequence diagram](./netlify-travis-proxy.svg "netlify-travis-proxy sequence diagram")
 
 ## Getting started
-```
-git clone git@github.com:kontrollanten/netlify-travis-proxy.git
-cd netlify-travis-proxy
-yarn
-cp .env.example .env # Open and fill your configuration
-cp example.config.dev.json config.dev.json # Open and fill your configuration
-(export $(cat .env | xargs) && yarn deploy)
-```
+You can deploy and manage netlify-travis-integration locally or which every CI environment you prefer, below is an example how to do it with Travis.
 
-[Add a Netlify deploy notification](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications) with the URL provided from `yarn deploy`.
-Additionaly you can [add support for GitHub statuses](#github-statuses).
+1. Fork this repository.
+1. Setup Travis for your forked repository.
+1. Set the following env variables in your Travis Settings.
+```
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+GITHUB_OAUTH_TOKEN
+TARGET_REPO=username/repository-with-e2e-tests
+TRAVIS_ACCESS_TOKEN
+```
+1. Trigger a Travis build on master branch.
+1. Verify that the deploy succeeds.
+1. Copy the URL provided by serverless in the deploy stage and use it to [add a Netlify deploy notification](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications).
+1. Additionaly you can [add support for GitHub statuses](#github-statuses).
 
 ## Target repo .travix.yml example
 Since Travis [doesn't support reading env vars for conditional builds from the API call](https://docs.travis-ci.com/user/conditional-builds-stages-jobs#Specifying-conditions), we have to use `type = api` for conditional checks.
