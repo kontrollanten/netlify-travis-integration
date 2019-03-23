@@ -28,6 +28,7 @@ GITHUB_OAUTH_TOKEN
 TARGET_REPO=username/repository-with-e2e-tests
 TRAVIS_ACCESS_TOKEN
 ```
+1. Set the accurate IAM permissions, see `aws-permissions.json`.
 1. Trigger a Travis build on master branch.
 1. Verify that the deploy succeeds.
 1. Copy the URL provided by serverless in the deploy stage and use it to [add a Netlify deploy notification](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications).

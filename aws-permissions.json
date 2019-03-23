@@ -1,0 +1,66 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:CreateFunction",
+                "cloudformation:ListStacks",
+                "lambda:ListFunctions",
+                "s3:PutAccelerateConfiguration",
+                "logs:DescribeLogGroups",
+                "lambda:ListVersionsByFunction",
+                "logs:DeleteLogGroup",
+                "lambda:GetFunction",
+                "lambda:UpdateFunctionConfiguration",
+                "s3:CreateBucket",
+                "lambda:GetFunctionConfiguration",
+                "s3:ListBucket",
+                "logs:CreateLogGroup",
+                "logs:PutLogEvents",
+                "lambda:UpdateFunctionCode",
+                "lambda:AddPermission",
+                "lambda:DeleteFunction",
+                "lambda:PublishVersion",
+                "lambda:RemovePermission",
+                "s3:DeleteBucket",
+                "cloudformation:ValidateTemplate"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "iam:GetRole",
+                "apigateway:PUT",
+                "cloudformation:DescribeStackResources",
+                "iam:CreateRole",
+                "iam:DeleteRole",
+                "cloudformation:DescribeStackResource",
+                "iam:PutRolePolicy",
+                "cloudformation:DescribeStacks",
+                "s3:PutObject",
+                "s3:GetObject",
+                "apigateway:DELETE",
+                "iam:PassRole",
+                "cloudformation:DescribeStackEvents",
+                "apigateway:UpdateRestApiPolicy",
+                "cloudformation:CreateStack",
+                "iam:DeleteRolePolicy",
+                "apigateway:PATCH",
+                "cloudformation:UpdateStack",
+                "apigateway:POST",
+                "s3:DeleteObject",
+                "apigateway:GET"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:role/*",
+                "arn:aws:cloudformation:*:*:stack/*/*",
+                "arn:aws:s3:::*/*",
+                "arn:aws:apigateway:*::*"
+            ]
+        }
+    ]
+}
