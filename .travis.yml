@@ -8,10 +8,6 @@ node_js: 8
 
 cache: yarn
 
-install:
-  - npm install yarn -g
-  - yarn
-
 jobs:
   include:
     - stage: lint
