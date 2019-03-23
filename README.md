@@ -31,8 +31,8 @@ TRAVIS_ACCESS_TOKEN
 4. Set the accurate IAM permissions, see `aws-permissions.json`.
 5. Trigger a Travis build on master branch.
 6. Verify that the deploy succeeds.
-7. Copy the URL provided by serverless in the deploy stage and use it to [add a Netlify deploy notification](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications).
-8. Additionaly you can [add support for GitHub statuses](#github-statuses).
+7. Copy the travis-caller URL provided by serverless in the deploy stage and use it to [add a Netlify deploy notification](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications).
+8. Additionaly you can [add support for GitHub statuses by adding the github-status URL to Travis notifications](#github-statuses).
 
 ## Target repo .travix.yml example
 Since Travis [doesn't support reading env vars for conditional builds from the API call](https://docs.travis-ci.com/user/conditional-builds-stages-jobs#Specifying-conditions), we have to use `type = api` for conditional checks.
