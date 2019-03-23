@@ -19,8 +19,8 @@ Typical workflow:
 You can deploy and manage netlify-travis-integration locally or which every CI environment you prefer, below is an example how to do it with Travis.
 
 1. Fork this repository.
-1. Setup Travis for your forked repository.
-1. Set the following env variables in your Travis Settings.
+2. Setup Travis for your forked repository.
+3. Set the following env variables in your Travis Settings.
 ```
 AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
@@ -28,11 +28,11 @@ GITHUB_OAUTH_TOKEN
 TARGET_REPO=username/repository-with-e2e-tests
 TRAVIS_ACCESS_TOKEN
 ```
-1. Set the accurate IAM permissions, see `aws-permissions.json`.
-1. Trigger a Travis build on master branch.
-1. Verify that the deploy succeeds.
-1. Copy the URL provided by serverless in the deploy stage and use it to [add a Netlify deploy notification](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications).
-1. Additionaly you can [add support for GitHub statuses](#github-statuses).
+4. Set the accurate IAM permissions, see `aws-permissions.json`.
+5. Trigger a Travis build on master branch.
+6. Verify that the deploy succeeds.
+7. Copy the URL provided by serverless in the deploy stage and use it to [add a Netlify deploy notification](https://www.netlify.com/docs/webhooks/#outgoing-webhooks-and-notifications).
+8. Additionaly you can [add support for GitHub statuses](#github-statuses).
 
 ## Target repo .travix.yml example
 Since Travis [doesn't support reading env vars for conditional builds from the API call](https://docs.travis-ci.com/user/conditional-builds-stages-jobs#Specifying-conditions), we have to use `type = api` for conditional checks.
