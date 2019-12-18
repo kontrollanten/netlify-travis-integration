@@ -31,7 +31,7 @@
     "test:ci": "yarn coverage && nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "engines": {
-    "node": ">=8.10.0"
+    "node": ">=12.14.0"
   },
   "author": "",
   "license": "ISC"

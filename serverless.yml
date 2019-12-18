@@ -2,7 +2,7 @@ service: netlify-travis-proxy
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs12.x
   environment:
     TRAVIS_ACCESS_TOKEN: ${env:TRAVIS_ACCESS_TOKEN}
     TARGET_REPO: ${env:TARGET_REPO}
